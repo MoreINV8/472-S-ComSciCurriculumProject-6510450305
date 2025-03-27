@@ -84,7 +84,6 @@ jobs:
           IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/${{ env.FRONTEND_APP_NAME }}:${IMAGE_TAG}"
 
           docker build -f ./dockerfile -t "${IMAGE_NAME}" .
-          docker push "${IMAGE_NAME}"
 
       - name: Build and push container backend
         working-directory: ./backend
@@ -93,4 +92,3 @@ jobs:
           IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/${{ env.BACKEND_APP_NAME }}:${IMAGE_TAG}"
 
           docker build -f ./dockerfile -t "${IMAGE_NAME}" .
-          docker push "${IMAGE_NAME}"
