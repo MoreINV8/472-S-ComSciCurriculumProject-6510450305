@@ -19,18 +19,6 @@ jobs:
           - 3306:3306
         options: --health-cmd="mysqladmin ping -h localhost" --health-interval=10s --health-timeout=5s --health-retries=3
 
-      minio:
-        image: minio/minio:latest
-        ports:
-          - 9000:9000
-          - 9001:9001
-        options: >-
-          --health-cmd "curl -f http://localhost:9000/minio/health/live || exit 1"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 3
-          minio/minio:latest server /data --console-address ":9001"
-
     steps:
       - uses: actions/checkout@v4
 
@@ -47,19 +35,6 @@ jobs:
             echo 'Waiting for MySQL...';
             sleep 2;
           done
-
-      - name: Install MinIO Client (mc)
-        run: |
-          curl -O https://dl.min.io/client/mc/release/linux-amd64/mc
-          chmod +x mc
-          sudo mv mc /usr/local/bin/
-
-      - name: Configure MinIO Client
-        run: |
-          mc alias set myminio http://127.0.0.1:9000 ${{ secrets.MINIO_ACCESS_KEY }} ${{ secrets.MINIO_SECRET_KEY }}
-
-      - name: Create a Bucket
-        run: mc mb myminio/${{ secrets.MINIO_BUCKET_NAME }}
 
       - name: Copy evironment file
         run: cp .env.example .env
