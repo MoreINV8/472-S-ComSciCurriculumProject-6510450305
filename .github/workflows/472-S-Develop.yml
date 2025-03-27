@@ -65,7 +65,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      APP_NAME: "gitops-backend"
+      FRONTEND_APP_NAME: "gitops-backend"
+      BACKEND_APP_NAME: "gitops-backend"
 
     steps:
       - uses: actions/checkout@v4
@@ -76,10 +77,18 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push container
+      - name: Build and push container frontend
         run: |-
-          IMAGE_TAG="${{ github.ref_name }}"
-          IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/${{ env.APP_NAME }}:${IMAGE_TAG}"
+          IMAGE_TAG="${{ github.event.pull_request.number }}.${{ github.run_number }}"
+          IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/${{ env.FRONTEND_APP_NAME }}:${IMAGE_TAG}"
 
-          docker build -f docker/prod.Dockerfile -t "${IMAGE_NAME}" .
+          docker build -f ./frontend/dockerfile -t "${IMAGE_NAME}" .
+          docker push "${IMAGE_NAME}"
+
+      - name: Build and push container backend
+        run: |-
+          IMAGE_TAG="${{ github.event.pull_request.number }}.${{ github.run_number }}"
+          IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/${{ env.BACKEND_APP_NAME }}:${IMAGE_TAG}"
+
+          docker build -f ./backend/dockerfile -t "${IMAGE_NAME}" .
           docker push "${IMAGE_NAME}"
