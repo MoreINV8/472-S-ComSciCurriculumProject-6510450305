@@ -40,7 +40,7 @@ jobs:
           done
 
       - name: Copy evironment file
-        run: cp .env.example .env
+        run: cp .env.example ./backend/.env
 
       - name: Set up Python
         uses: actions/setup-python@v5
