@@ -1,9 +1,12 @@
 name: CD-github-action
 
-on: 
-  push: 
-    branches: 
+on:
+  push:
+    branches:
       - main
+
+permissions:
+  contents: read
 
 jobs:
   release:
@@ -28,8 +31,8 @@ jobs:
           tag_name: ${VERSION}
           name: "Release ${{ github.ref_name }}"
           body: "🚀 New release ${{ github.ref_name }} is live!"
-          draft: false  # Set true to create as draft
-          prerelease: false  # Set true for pre-release
+          draft: false # Set true to create as draft
+          prerelease: false # Set true for pre-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -43,12 +46,12 @@ jobs:
         working-directory: ./frontend
         run: |-
           VERSION_NO_QUOTES="${VERSION//\'/}"  # Remove single quotes
-          
+
           IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/${{ env.FRONTEND_APP_NAME }}:${VERSION_NO_QUOTES}"
-          
+
           docker build -f ./dockerfile -t "${IMAGE_NAME}" .
           docker push "${IMAGE_NAME}"
-          
+
       - name: Build and push container backend
         working-directory: ./backend
         run: |-
