@@ -18,7 +18,7 @@ jobs:
 
       - name: Generate tag
         run: |-
-          TAG_NAME="v1.0.${{ github.run_number }}"
+          TAG_NAME="v1.1.${{ github.run_number }}"
 
           echo "VERSION='${TAG_NAME}'" >> $GITHUB_ENV
 
@@ -42,7 +42,6 @@ jobs:
       - name: Build and push container frontend
         working-directory: ./frontend
         run: |-
-          VERSION="v1.0.4"
           VERSION_NO_QUOTES="${VERSION//\'/}"  # Remove single quotes
           
           IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/${{ env.FRONTEND_APP_NAME }}:${VERSION_NO_QUOTES}"
@@ -53,7 +52,6 @@ jobs:
       - name: Build and push container backend
         working-directory: ./backend
         run: |-
-          VERSION="v1.0.4"
           VERSION_NO_QUOTES="${VERSION//\'/}"  # Remove single quotes
 
           IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/${{ env.BACKEND_APP_NAME }}:${VERSION_NO_QUOTES}"
